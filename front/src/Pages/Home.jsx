@@ -17,11 +17,6 @@ export const Home = () => {
       body: formData,
     });
     const res = await response.json();
-    // const url = URL.createObjectURL(res);
-    // setPlot(url);
-    console.log(res);
-    setColumns(res.columns);
-    setRows(res.rows);
     setGridData(res);
   };
   return (
