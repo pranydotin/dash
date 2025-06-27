@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@silevis/reactgrid": "^4.1.17",
+    "@tailwindcss/vite": "^4.1.10",
+    "handsontable": "^15.3.0",
+    "tailwindcss": "^4.1.10"
+  }
+}
