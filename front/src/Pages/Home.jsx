@@ -2,14 +2,13 @@ import { useState } from "react";
 
 import { DashboardNav } from "../components/DashboardNav";
 import { SheetContainer } from "../components/SheetContainer";
+import { ToastContainer, toast } from "react-toastify";
 
 export const Home = () => {
   const [plot, setPlot] = useState(null);
   const [gridData, setGridData] = useState(null);
 
   const handleSubmit = async (file) => {
-    console.log(file);
-
     const formData = new FormData();
     formData.append("file", file);
     const response = await fetch("http://127.0.0.1:8000/datasets", {
@@ -17,12 +16,17 @@ export const Home = () => {
       body: formData,
     });
     const res = await response.json();
-    setGridData(res);
+    console.log(res);
+    if (res.status != "error") {
+      setGridData(res);
+      console.log("asa");
+    } else toast.error(res.msg);
   };
   return (
     <>
       <DashboardNav onFileSelect={handleSubmit} />
       <SheetContainer gridData={gridData} />
+      <ToastContainer />
     </>
   );
 };

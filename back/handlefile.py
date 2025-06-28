@@ -6,6 +6,7 @@ import numpy as np
 import io
 import seaborn as sns
 from matplotlib import pyplot as plt
+from pathlib import Path
 
 router=APIRouter()
 
@@ -13,7 +14,22 @@ router=APIRouter()
 async def handleFile(file:UploadFile=File(...)):
     try:
         content=await file.read()
-        data=pd.read_csv(io.StringIO(content.decode("utf-8")))
+        file_ext=Path(file.filename).suffix.lower()
+
+
+        match file_ext:
+            case ".csv":
+                file_io=io.StringIO(content.decode("utf-8"))
+                data=pd.read_csv(file_io)
+            case ".xls"| ".xlsx":
+                file_io = io.BytesIO(content)
+                data=pd.read_excel(file_io)
+            case _:
+                return{
+                    "status":"error",
+                    "msg":f"Unsupported file type: {file_ext}"
+                }
+
 
         column_ids = ["rowNumber"] + list(data.columns)
         columns = [{"columnId": col, "width": 100} for col in column_ids]
@@ -34,7 +50,11 @@ async def handleFile(file:UploadFile=File(...)):
 
         all_rows = [header_row] + data_rows
 
-        return {"columns": columns, "rows": all_rows}
+        return {
+            "status":"success",
+            "columns": columns,
+            "rows": all_rows
+            }
 
         # sns.set_theme(style="whitegrid")
         # plt.figure(figsize=(8,5))
@@ -49,7 +69,8 @@ async def handleFile(file:UploadFile=File(...)):
         # return StreamingResponse(buf,media_type="image/png")
     except Exception as e:
         return {
-            "error":str(e)
+            "status":"error",
+            "msg":str(e)
         }
 
 @router.get("/hell")

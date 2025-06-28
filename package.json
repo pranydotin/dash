@@ -3,6 +3,7 @@
     "@silevis/reactgrid": "^4.1.17",
     "@tailwindcss/vite": "^4.1.10",
     "handsontable": "^15.3.0",
+    "react-toastify": "^11.0.5",
     "tailwindcss": "^4.1.10"
   }
 }
