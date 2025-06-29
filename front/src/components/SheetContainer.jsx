@@ -41,8 +41,16 @@ export const SheetContainer = ({ gridData }) => {
     ];
   }
   return (
-    <div className="w-full">
-      <ReactGrid rows={rows} columns={columns} enableRangeSelection />
+    <div className="w-full h-[calc(100vh-4rem)] overflow-x-auto">
+      <div className="w-full h-full">
+        <ReactGrid
+          rows={rows}
+          columns={columns}
+          enableRangeSelection
+          stickyLeftColumns={1}
+          stickyTopRows={1}
+        />
+      </div>
     </div>
   );
 };

@@ -31,9 +31,11 @@ async def handleFile(file:UploadFile=File(...)):
                 }
 
 
+        data=data.fillna("")
         column_ids = ["rowNumber"] + list(data.columns)
         columns = [{"columnId": col, "width": 100} for col in column_ids]
         columns[0]['width']=50
+
         header_row = {
         "rowId": "header",
         "cells":[{"type":"header","text":""}]+
