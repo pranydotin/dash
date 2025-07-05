@@ -1,30 +1,62 @@
 import { useState, useRef } from "react";
 
 export const DashboardNav = ({ onFileSelect }) => {
-  const fileRef = useRef();
+  const [isopen, setIsOpen] = useState(false);
 
+  return (
+    <header>
+      <div className="p-5 bg-amber-100 rounded-md ">
+        <i
+          className="fa-solid fa-bars text-amber-700 mr-2.5 text-lg cursor-pointer hover:text-amber-800"
+          onClick={() => setIsOpen(true)}
+        ></i>
+      </div>
+      <Aside
+        isOpen={isopen}
+        onclose={() => setIsOpen(false)}
+        onFileSelect={onFileSelect}
+      />
+    </header>
+  );
+};
+
+const Aside = ({ isOpen, onclose, onFileSelect }) => {
+  const importRef = useRef();
   const handleChange = (e) => {
     const file = e.target.files[0];
     if (file) onFileSelect(file);
   };
   return (
-    <header>
-      <div className="p-5 bg-amber-100 rounded-md ">
-        <span
-          className="p-3 text-amber-100 bg-amber-700 transition-colors delay-75 duration-100 ease-in-out hover:bg-amber-100 hover:text-amber-700 border border-amber-700 rounded-md cursor-pointer"
-          onClick={() => fileRef.current.click()}
+    <aside
+      className={`w-64 h-screen bg-white text-amber-900 fixed -left-64 top-0 shadow-lg z-10 transform transition-transform duration-300 ease-in-out ${
+        isOpen ? "translate-x-full" : "translate-x-0"
+      }`}
+    >
+      <div className="p-6 text-xl font-bold border-b border-amber-300 bg-amber-100 ">
+        <div
+          className="text-right cursor-pointer hover text-amber-50"
+          onClick={onclose}
         >
-          Import File
-        </span>
-
-        <input
-          type="file"
-          accept=".csv, .xlsx, .xls"
-          onChange={handleChange}
-          ref={fileRef}
-          style={{ display: "none" }} // Hide the default file input
-        />
+          <i className="fa-solid fa-xmark text-amber-700"></i>
+        </div>
       </div>
-    </header>
+      <nav>
+        <ul className="w-full">
+          <li
+            className="block cursor-pointer hover:text-amber-600 hover:bg-amber-50 p-3"
+            onClick={() => importRef.current.click()}
+          >
+            Import File
+          </li>
+        </ul>
+      </nav>
+      <input
+        type="file"
+        accept=".csv, .xlsx, .xls"
+        onChange={handleChange}
+        ref={importRef}
+        style={{ display: "none" }} // Hide the default file input
+      />
+    </aside>
   );
 };

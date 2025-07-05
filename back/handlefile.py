@@ -21,9 +21,9 @@ async def handleFile(file:UploadFile=File(...)):
             case ".csv":
                 file_io=io.StringIO(content.decode("utf-8"))
                 data=pd.read_csv(file_io)
-            case ".xls"| ".xlsx":
-                file_io = io.BytesIO(content)
-                data=pd.read_excel(file_io)
+            # case ".xls"| ".xlsx":
+            #     file_io = io.BytesIO(content)
+            #     data=pd.read_excel(file_io)
             case _:
                 return{
                     "status":"error",
