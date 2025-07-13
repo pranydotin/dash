@@ -1,18 +1,16 @@
 import { useState, useRef } from "react";
 
-export const DashboardNav = ({ onFileSelect }) => {
-  const [isopen, setIsOpen] = useState(false);
-
+export const DashboardNav = ({ onFileSelect, isOpen, setIsOpen }) => {
   return (
     <header>
-      <div className="p-5 bg-amber-100 rounded-md ">
+      <div className="p-3 bg-amber-100 rounded-md ">
         <i
           className="fa-solid fa-bars text-amber-700 mr-2.5 text-lg cursor-pointer hover:text-amber-800"
           onClick={() => setIsOpen(true)}
         ></i>
       </div>
       <Aside
-        isOpen={isopen}
+        isOpen={isOpen}
         onclose={() => setIsOpen(false)}
         onFileSelect={onFileSelect}
       />

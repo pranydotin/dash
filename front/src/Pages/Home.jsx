@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 export const Home = () => {
   const [plot, setPlot] = useState(null);
   const [gridData, setGridData] = useState(null);
+  const [isopen, setIsOpen] = useState(false);
 
   const handleSubmit = async (file) => {
     const formData = new FormData();
@@ -19,12 +20,16 @@ export const Home = () => {
     console.log(res);
     if (res.status != "error") {
       setGridData(res);
-      console.log("asa");
+      setIsOpen(false);
     } else toast.error(res.msg);
   };
   return (
     <>
-      <DashboardNav onFileSelect={handleSubmit} />
+      <DashboardNav
+        onFileSelect={handleSubmit}
+        isOpen={isopen}
+        setIsOpen={setIsOpen}
+      />
       <SheetContainer gridData={gridData} />
       <ToastContainer />
     </>
