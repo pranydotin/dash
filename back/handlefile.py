@@ -1,4 +1,4 @@
-from fastapi import APIRouter,UploadFile,File
+from fastapi import APIRouter, UploadFile, File
 from fastapi.responses import StreamingResponse
 from typing import Union
 import pandas as pd
@@ -8,38 +8,38 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from pathlib import Path
 
-router=APIRouter()
+router = APIRouter()
+
 
 @router.post("/datasets")
-async def handleFile(file:UploadFile=File(...)):
+async def handleFile(file: UploadFile = File(...)):
     try:
-        content=await file.read()
-        file_ext=Path(file.filename).suffix.lower()
-
+        content = await file.read()
+        file_ext = Path(file.filename).suffix.lower()
 
         match file_ext:
             case ".csv":
-                file_io=io.StringIO(content.decode("utf-8"))
-                data=pd.read_csv(file_io)
+                file_io = io.StringIO(content.decode("utf-8"))
+                data = pd.read_csv(file_io)
             # case ".xls"| ".xlsx":
             #     file_io = io.BytesIO(content)
             #     data=pd.read_excel(file_io)
             case _:
-                return{
-                    "status":"error",
-                    "msg":f"Unsupported file type: {file_ext}"
+                return {
+                    "status": "error",
+                    "msg": f"Unsupported file type: {file_ext}"
                 }
 
-
-        data=data.fillna("")
+        data = data.fillna("")
         column_ids = ["rowNumber"] + list(data.columns)
-        columns = [{"columnId": col, "width": 100} for col in column_ids]
-        columns[0]['width']=50
+        columns = [{"columnId": col, "width": 100, "resizable": True}
+                   for col in column_ids]
+        columns[0]['width'] = 50
 
         header_row = {
-        "rowId": "header",
-        "cells":[{"type":"header","text":""}]+
-                [{"type": "header", "text": col} for col in data.columns]
+            "rowId": "header",
+            "cells": [{"type": "header", "text": ""}] +
+            [{"type": "header", "text": col} for col in data.columns]
         }
 
         data_rows = []
@@ -53,10 +53,10 @@ async def handleFile(file:UploadFile=File(...)):
         all_rows = [header_row] + data_rows
 
         return {
-            "status":"success",
+            "status": "success",
             "columns": columns,
             "rows": all_rows
-            }
+        }
 
         # sns.set_theme(style="whitegrid")
         # plt.figure(figsize=(8,5))
@@ -71,10 +71,11 @@ async def handleFile(file:UploadFile=File(...)):
         # return StreamingResponse(buf,media_type="image/png")
     except Exception as e:
         return {
-            "status":"error",
-            "msg":str(e)
+            "status": "error",
+            "msg": str(e)
         }
+
 
 @router.get("/hell")
 def get():
-    return{"dance":123}
+    return {"dance": 123}
