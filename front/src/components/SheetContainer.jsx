@@ -1,5 +1,5 @@
 import { ReactGrid } from "@silevis/reactgrid";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "@silevis/reactgrid/styles.css";
 
 export const SheetContainer = ({ gridData }) => {
@@ -55,9 +55,41 @@ export const SheetContainer = ({ gridData }) => {
     });
   };
 
+  const [width, setWidth] = useState("");
+  const isResizing = useRef(false);
+
+  const startResize = (e) => {
+    isResizing.current = true;
+    console.log(e);
+
+    window.addEventListener("mousemove", handleResize);
+    window.addEventListener("mouseup", stopResize);
+  };
+  const handleResize = (e) => {
+    if (!isResizing.current) return;
+    console.log("start");
+
+    const container = document.querySelector("#main-container");
+    const containerRect = container.getBoundingClientRect();
+    let newWidth = e.clientX - containerRect.left;
+
+    newWidth = Math.max(50, Math.min(containerRect.width - 50, newWidth));
+    console.log(`w-[${newWidth}px]`);
+    setWidth(`${newWidth}px`);
+  };
+  const stopResize = () => {
+    isResizing.current = false;
+    window.removeEventListener("mousemove", handleResize);
+    window.removeEventListener("mouseup", stopResize);
+    console.log("stop");
+  };
+
   return (
-    <div className="w-full h-[calc(100vh-3rem)] overflow-x-auto flex">
-      <div className="w-full h-full overflow-x-auto">
+    <div
+      className="w-full h-[calc(100vh-3rem)] overflow-x-auto flex"
+      id="main-container"
+    >
+      <div style={{ width: `${width}` }} className="overflow-x-auto">
         <ReactGrid
           rows={rows}
           columns={columns}
@@ -68,12 +100,12 @@ export const SheetContainer = ({ gridData }) => {
         />
       </div>
       <div
-        className="drag bg-amber-100 w-[25px] cursor-w-resize flex justify-center items-center"
-        draggable
+        className="drag bg-amber-100 w-[15px] cursor-w-resize flex justify-center items-center"
+        onMouseDown={startResize}
       >
         <i className="fa-solid fa-ellipsis-vertical text-amber-300"></i>
       </div>
-      <div className="w-full"></div>
+      <div className="flex-1"></div>
     </div>
   );
 };

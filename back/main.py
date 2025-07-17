@@ -1,11 +1,12 @@
 from typing import Union
 
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 import handlefile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
 app = FastAPI()
+router = APIRouter()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5174"],
@@ -13,7 +14,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 
 @app.get("/")
