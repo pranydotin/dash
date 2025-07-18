@@ -4,8 +4,6 @@ export const buildGrid = (
   colCount = 0,
   header = []
 ) => {
-  console.log(data);
-  console.log(header);
   const DEFAULT_ROW_COUNT = 50;
   const DEFAULT_COLUMN_COUNT = 16;
 
@@ -42,7 +40,6 @@ export const buildGrid = (
       })),
     ],
   };
-  console.log(headerRow);
 
   const gridRows = [headerRow];
   for (let i = 0; i < totalRows; i++) {
