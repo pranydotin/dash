@@ -31,44 +31,19 @@ async def handleFile(file: UploadFile = File(...)):
                 }
 
         data = data.fillna("")
-        column_ids = ["rowNumber"] + list(data.columns)
-        columns = [{"columnId": col, "width": 100, "resizable": True}
-                   for col in column_ids]
-        columns[0]['width'] = 50
-
-        header_row = {
-            "rowId": "header",
-            "cells": [{"type": "header", "text": ""}] +
-            [{"type": "header", "text": col} for col in data.columns]
-        }
-
-        data_rows = []
-        for i, row in data.iterrows():
-            row_number_cell = {"type": "header", "text": str(i + 1)}
-            cells = [{"type": "text", "text": str(cell)} for cell in row]
-            data_rows.append({
-                "rowId": i + 1,
-                "cells": [row_number_cell]+cells})
-
-        all_rows = [header_row] + data_rows
+        data_list = data.values.tolist()
+        header = list(data.columns)
+        row_count = data.shape[0]
+        col_count = data.shape[1]
 
         return {
             "status": "success",
-            "columns": columns,
-            "rows": all_rows
+            "data": data_list,
+            "rows": row_count,
+            "cols": col_count,
+            "header": header
         }
 
-        # sns.set_theme(style="whitegrid")
-        # plt.figure(figsize=(8,5))
-        # sns.boxplot(data,x=data['Variable'],y=data['Group'],hue=data['Variable'],palette=["#00AFBB", "#E7B800", "#FC4E07", "#bb5100"],fill=False)
-        # plt.title("something")
-
-        # buf=io.BytesIO()
-        # plt.savefig(buf,format="png")
-        # plt.close()
-        # buf.seek(0)
-
-        # return StreamingResponse(buf,media_type="image/png")
     except Exception as e:
         return {
             "status": "error",
