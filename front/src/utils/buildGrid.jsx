@@ -63,23 +63,3 @@ export const buildGrid = (
     rows: gridRows,
   };
 };
-//   const rows = [
-//     headerRow,
-//     ...Array.from({ length: totalRows }, (_, i) => ({
-//       rowId: i + 1,
-//       cells: [
-//         { type: "header", text: String(i + 1) },
-//         ...Array.from({ length: totalCols }, () => ({
-//           type: "text",
-//           text: "",
-//         })),
-//       ],
-//     })),
-//   ];
-
-//   return {
-//     status: "default",
-//     columns,
-//     rows,
-//   };
-// };
