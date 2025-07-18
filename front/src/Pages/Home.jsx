@@ -4,11 +4,14 @@ import { DashboardNav } from "../components/DashboardNav";
 import { SheetContainer } from "../components/SheetContainer";
 import { ToastContainer, toast } from "react-toastify";
 import { buildGrid } from "../utils/buildGrid";
+import { FeatureNav } from "../utils/FeatureNav";
 
 export const Home = () => {
   const [plot, setPlot] = useState(null);
   const [gridData, setGridData] = useState(() => buildGrid());
-  const [isopen, setIsOpen] = useState(false);
+  const [isHamMenuOpen, setIsHamMenuOpen] = useState(false);
+  const [activeNav, setActiveNav] = useState("");
+  const [isFeatureNavBoxOpen, setIsFeatureNavBoxOpen] = useState(false);
 
   const handleSubmit = async (file) => {
     const formData = new FormData();
@@ -20,17 +23,25 @@ export const Home = () => {
     const res = await response.json();
     if (res.status != "error") {
       setGridData(() => buildGrid(res.data, res.rows, res.cols, res.header));
-      setIsOpen(false);
+      setIsHamMenuOpen(false);
     } else toast.error(res.msg);
   };
   return (
     <>
       <DashboardNav
         onFileSelect={handleSubmit}
-        isOpen={isopen}
-        setIsOpen={setIsOpen}
+        isHamMenuOpen={isHamMenuOpen}
+        setIsHamMenuOpen={setIsHamMenuOpen}
+        activeNav={activeNav}
+        setActiveNav={setActiveNav}
+        setIsFeatureNavBoxOpen={setIsFeatureNavBoxOpen}
       />
-      <SheetContainer gridData={gridData} />
+      <div className="flex">
+        {isFeatureNavBoxOpen && (
+          <FeatureNav setIsFeatureNavBoxOpen={setIsFeatureNavBoxOpen} />
+        )}
+        <SheetContainer gridData={gridData} />
+      </div>
       <ToastContainer />
     </>
   );
