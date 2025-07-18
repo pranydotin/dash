@@ -3,11 +3,11 @@ import { useState } from "react";
 import { DashboardNav } from "../components/DashboardNav";
 import { SheetContainer } from "../components/SheetContainer";
 import { ToastContainer, toast } from "react-toastify";
-import { buildEmptyGrid } from "../utils/buildEmptyGrid";
+import { buildGrid } from "../utils/buildGrid";
 
 export const Home = () => {
   const [plot, setPlot] = useState(null);
-  const [gridData, setGridData] = useState(() => buildEmptyGrid());
+  const [gridData, setGridData] = useState(() => buildGrid());
   const [isopen, setIsOpen] = useState(false);
 
   const handleSubmit = async (file) => {
@@ -19,8 +19,7 @@ export const Home = () => {
     });
     const res = await response.json();
     if (res.status != "error") {
-      //   console.log(res);
-      setGridData(() => buildEmptyGrid(res));
+      setGridData(() => buildGrid(res.data, res.rows, res.cols, res.header));
       setIsOpen(false);
     } else toast.error(res.msg);
   };
