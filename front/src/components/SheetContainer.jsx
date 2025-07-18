@@ -6,43 +6,8 @@ export const SheetContainer = ({ gridData }) => {
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
   useEffect(() => {
-    if (gridData) {
-      setColumns(gridData.columns);
-      setRows(gridData.rows);
-    } else {
-      setColumns([
-        { columnId: "rowNumber", width: 50 },
-        { columnId: "A", width: 150 },
-        { columnId: "B", width: 150 },
-        { columnId: "C", width: 150 },
-        { columnId: "D", width: 150 },
-        { columnId: "E", width: 150 },
-      ]);
-      setRows([
-        {
-          rowId: "header",
-          cells: [
-            { type: "header", text: "" },
-            { type: "header", text: "A" },
-            { type: "header", text: "B" },
-            { type: "header", text: "C" },
-            { type: "header", text: "D" },
-            { type: "header", text: "E" },
-          ],
-        },
-        ...Array.from({ length: 20 }, (_, i) => ({
-          rowId: i + 1,
-          cells: [
-            { type: "header", text: `${i + 1}` },
-            { type: "text", text: "" },
-            { type: "text", text: "" },
-            { type: "text", text: "" },
-            { type: "text", text: "" },
-            { type: "text", text: "" },
-          ],
-        })),
-      ]);
-    }
+    setColumns(gridData.columns);
+    setRows(gridData.rows);
   }, [gridData]);
 
   const handleColumnResize = (ci, width) => {
@@ -55,33 +20,29 @@ export const SheetContainer = ({ gridData }) => {
     });
   };
 
-  const [width, setWidth] = useState("");
+  const [width, setWidth] = useState("750px");
   const isResizing = useRef(false);
 
   const startResize = (e) => {
     isResizing.current = true;
-    console.log(e);
 
     window.addEventListener("mousemove", handleResize);
     window.addEventListener("mouseup", stopResize);
   };
   const handleResize = (e) => {
     if (!isResizing.current) return;
-    console.log("start");
 
     const container = document.querySelector("#main-container");
     const containerRect = container.getBoundingClientRect();
     let newWidth = e.clientX - containerRect.left;
 
-    newWidth = Math.max(50, Math.min(containerRect.width - 50, newWidth));
-    console.log(`w-[${newWidth}px]`);
+    newWidth = Math.max(Math.min(containerRect.width - 30, newWidth));
     setWidth(`${newWidth}px`);
   };
   const stopResize = () => {
     isResizing.current = false;
     window.removeEventListener("mousemove", handleResize);
     window.removeEventListener("mouseup", stopResize);
-    console.log("stop");
   };
 
   return (
