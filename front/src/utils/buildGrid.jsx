@@ -36,7 +36,10 @@ export const buildGrid = (
       { type: "header", text: "" },
       ...Array.from({ length: totalCols }, (_, colIndex) => ({
         type: "header",
-        text: header[colIndex] !== undefined ? String(header[colIndex]) : "",
+        text:
+          header[colIndex] !== undefined
+            ? String(header[colIndex])
+            : getExcelColumnName(colIndex),
       })),
     ],
   };
