@@ -1,10 +1,13 @@
-export const FeatureNav = ({ setIsFeatureNavBoxOpen }) => {
+export const FeatureNav = ({ setIsFeatureNavBoxOpen, setActiveNav }) => {
   return (
     <>
       <aside className="nav-list bg-amber-50 p-1 py-10 text-[10px] w-20">
         <div
           className="w-[30px] p-1 bg-amber-700 flex justify-center items-center   group cursor-pointer shadow-md hover:shadow-xl-30 hover:bg-amber-900 relative top-[-37px] left-[40px] rounded-l-[10px]"
-          onClick={() => setIsFeatureNavBoxOpen(false)}
+          onClick={() => {
+            setIsFeatureNavBoxOpen(false);
+            setActiveNav("");
+          }}
         >
           <i className="fa-solid fa-arrow-left text-amber-100 group-hover:text-amber-100 text-[15px]"></i>
         </div>

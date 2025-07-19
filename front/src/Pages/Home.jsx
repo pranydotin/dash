@@ -38,7 +38,10 @@ export const Home = () => {
       />
       <div className="flex">
         {isFeatureNavBoxOpen && (
-          <FeatureNav setIsFeatureNavBoxOpen={setIsFeatureNavBoxOpen} />
+          <FeatureNav
+            setIsFeatureNavBoxOpen={setIsFeatureNavBoxOpen}
+            setActiveNav={setActiveNav}
+          />
         )}
         <SheetContainer gridData={gridData} />
       </div>
