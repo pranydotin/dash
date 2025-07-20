@@ -64,5 +64,6 @@ export const buildGrid = (
     status: "default",
     columns,
     rows: gridRows,
+    headers: header,
   };
 };

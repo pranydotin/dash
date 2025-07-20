@@ -1,14 +1,22 @@
 import { ReactGrid } from "@silevis/reactgrid";
 import { useState, useEffect, useRef } from "react";
+import { AnalyisRequestBox } from "./AnalysisRequestBox";
 import "@silevis/reactgrid/styles.css";
 
-export const SheetContainer = ({ gridData }) => {
+export const SheetContainer = ({ gridData, updateHeader }) => {
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
+  const [headers, setHeaders] = useState([]);
   useEffect(() => {
     setColumns(gridData.columns);
     setRows(gridData.rows);
+    setHeaders(gridData.headers);
   }, [gridData]);
+
+  //   useEffect(() => {
+  //     // updateHeader(headers);
+  //     console.log(headers);
+  //   }, [headers]);
 
   const handleColumnResize = (ci, width) => {
     setColumns((prevColumns) => {
@@ -47,10 +55,13 @@ export const SheetContainer = ({ gridData }) => {
 
   return (
     <div
-      className="w-full h-[calc(100vh-3rem)] overflow-x-auto flex"
+      className="w-full h-[calc(100vh-3rem)] overflow-x-auto flex p-2 bg-gray-100"
       id="main-container"
     >
-      <div style={{ width: `${width}` }} className="overflow-x-auto">
+      <div
+        style={{ width: `${width}` }}
+        className="overflow-x-auto bg-white border-gray-300 border-1"
+      >
         <ReactGrid
           rows={rows}
           columns={columns}
@@ -61,11 +72,12 @@ export const SheetContainer = ({ gridData }) => {
         />
       </div>
       <div
-        className="drag bg-amber-100 w-[15px] cursor-w-resize flex justify-center items-center"
+        className="drag bg-gray-100 w-[15px] cursor-w-resize flex justify-center items-center"
         onMouseDown={startResize}
       >
-        <i className="fa-solid fa-ellipsis-vertical text-amber-300"></i>
+        <i className="fa-solid fa-ellipsis-vertical text-gray-400"></i>
       </div>
+      <AnalyisRequestBox headers={headers} />
       <div className="flex-1"></div>
     </div>
   );
