@@ -1,6 +1,7 @@
 import { ReactGrid } from "@silevis/reactgrid";
 import { useState, useEffect, useRef } from "react";
 import { AnalyisRequestBox } from "./AnalysisRequestBox";
+import { getCSV } from "../utils/getCSV";
 import "@silevis/reactgrid/styles.css";
 
 export const SheetContainer = ({
@@ -13,6 +14,7 @@ export const SheetContainer = ({
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
   const [headers, setHeaders] = useState([]);
+
   useEffect(() => {
     setColumns(gridData.columns);
     setRows(gridData.rows);
@@ -21,15 +23,10 @@ export const SheetContainer = ({
 
   useEffect(() => {
     console.log(activeAnalysis);
+    if (rows.length > 0) {
+      const csv = getCSV(rows);
+    }
   }, [activeAnalysis]);
-  //   useEffect(() => {
-  //     console.log(width);
-  //   }, [width]);
-
-  //   useEffect(() => {
-  //     // updateHeader(headers);
-  //     console.log(headers);
-  //   }, [headers]);
 
   const handleColumnResize = (ci, width) => {
     setColumns((prevColumns) => {

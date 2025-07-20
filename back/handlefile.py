@@ -30,6 +30,8 @@ async def handleFile(file: UploadFile = File(...)):
                     "msg": f"Unsupported file type: {file_ext}"
                 }
 
+        data = data.dropna(axis=1, how="all")
+        data = data.dropna(axis=0, how="all")
         data = data.fillna("")
         data_list = data.values.tolist()
         header = list(data.columns)
