@@ -12,19 +12,10 @@ export const buildGrid = (
   const totalRows = Math.max(rowCount, DEFAULT_ROW_COUNT);
   const totalCols = Math.max(colCount, DEFAULT_COLUMN_COUNT);
 
-  const getExcelColumnName = (index) => {
-    let name = "";
-    while (index >= 0) {
-      name = String.fromCharCode((index % 26) + 65) + name;
-      index = Math.floor(index / 26) - 1;
-    }
-    return name;
-  };
-
   const columns = [
     { columnId: "rowNumber", width: 50 },
     ...Array.from({ length: totalCols }, (_, i) => ({
-      columnId: getExcelColumnName(i),
+      columnId: i,
       width: 120,
       resizable: true,
     })),
@@ -39,7 +30,13 @@ export const buildGrid = (
         text:
           header[colIndex] !== undefined
             ? String(header[colIndex])
-            : getExcelColumnName(colIndex),
+            : colIndex === 0
+            ? "A"
+            : colIndex === 1
+            ? "B"
+            : colIndex === 2
+            ? "C"
+            : "",
       })),
     ],
   };

@@ -3,7 +3,13 @@ import { useState, useEffect, useRef } from "react";
 import { AnalyisRequestBox } from "./AnalysisRequestBox";
 import "@silevis/reactgrid/styles.css";
 
-export const SheetContainer = ({ gridData, updateHeader }) => {
+export const SheetContainer = ({
+  gridData,
+  activeAnalysis,
+  setActiveAnalysis,
+  setcontainerWidth,
+  sheetContainerWidth,
+}) => {
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
   const [headers, setHeaders] = useState([]);
@@ -12,6 +18,13 @@ export const SheetContainer = ({ gridData, updateHeader }) => {
     setRows(gridData.rows);
     setHeaders(gridData.headers);
   }, [gridData]);
+
+  useEffect(() => {
+    console.log(activeAnalysis);
+  }, [activeAnalysis]);
+  //   useEffect(() => {
+  //     console.log(width);
+  //   }, [width]);
 
   //   useEffect(() => {
   //     // updateHeader(headers);
@@ -28,7 +41,7 @@ export const SheetContainer = ({ gridData, updateHeader }) => {
     });
   };
 
-  const [width, setWidth] = useState("750px");
+  //   const [width, setWidth] = useState("750px");
   const isResizing = useRef(false);
 
   const startResize = (e) => {
@@ -45,7 +58,7 @@ export const SheetContainer = ({ gridData, updateHeader }) => {
     let newWidth = e.clientX - containerRect.left;
 
     newWidth = Math.max(Math.min(containerRect.width - 30, newWidth));
-    setWidth(`${newWidth}px`);
+    setcontainerWidth(`${newWidth}px`);
   };
   const stopResize = () => {
     isResizing.current = false;
@@ -59,7 +72,7 @@ export const SheetContainer = ({ gridData, updateHeader }) => {
       id="main-container"
     >
       <div
-        style={{ width: `${width}` }}
+        style={{ width: `${sheetContainerWidth}` }}
         className="overflow-x-auto bg-white border-gray-300 border-1"
       >
         <ReactGrid
@@ -77,7 +90,14 @@ export const SheetContainer = ({ gridData, updateHeader }) => {
       >
         <i className="fa-solid fa-ellipsis-vertical text-gray-400"></i>
       </div>
-      <AnalyisRequestBox headers={headers} />
+      {activeAnalysis && (
+        <AnalyisRequestBox
+          headers={headers}
+          setAnalysis={setActiveAnalysis}
+          title={activeAnalysis}
+          setcontainerWidth={setcontainerWidth}
+        />
+      )}
       <div className="flex-1"></div>
     </div>
   );

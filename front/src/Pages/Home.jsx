@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { DashboardNav } from "../components/DashboardNav";
 import { SheetContainer } from "../components/SheetContainer";
@@ -12,6 +12,8 @@ export const Home = () => {
   const [isHamMenuOpen, setIsHamMenuOpen] = useState(false);
   const [activeNav, setActiveNav] = useState("");
   const [isFeatureNavBoxOpen, setIsFeatureNavBoxOpen] = useState(false);
+  const [activeAnalysis, setActiveAnalysis] = useState(null);
+  const [sheetContainerWidth, setcontainerWidth] = useState("750px");
 
   const handleSubmit = async (file) => {
     const formData = new FormData();
@@ -41,9 +43,17 @@ export const Home = () => {
           <FeatureNav
             setIsFeatureNavBoxOpen={setIsFeatureNavBoxOpen}
             setActiveNav={setActiveNav}
+            setActiveAnalysis={setActiveAnalysis}
+            setSheetWidth={setcontainerWidth}
           />
         )}
-        <SheetContainer gridData={gridData} />
+        <SheetContainer
+          gridData={gridData}
+          activeAnalysis={activeAnalysis}
+          setActiveAnalysis={setActiveAnalysis}
+          setcontainerWidth={setcontainerWidth}
+          sheetContainerWidth={sheetContainerWidth}
+        />
       </div>
       <ToastContainer />
     </>

@@ -1,12 +1,26 @@
-export const AnalyisRequestBox = ({ headers = [] }) => {
-  const header =
-    headers.length > 0
-      ? headers
-      : ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+import { useState } from "react";
+
+export const AnalyisRequestBox = ({
+  headers = [],
+  setAnalysis,
+  title,
+  setcontainerWidth,
+}) => {
+  const header = headers.length > 0 ? headers : ["A", "B", "C"];
+  const closeDialog = () => {
+    setAnalysis(null);
+    setcontainerWidth("750px");
+  };
+
   return (
     <div className="w-[620px] border-1 border-gray-400 p-4">
-      <div className="header flex p-2 border-b-1 border-b-gray-300">
-        <h2 className="text-2xl text-gray-500 font-semibold">Title</h2>
+      <div className="header flex p-2 border-b-1 border-b-gray-300 justify-between items-center ">
+        <h2 className="text-2xl text-gray-500 font-semibold">{title}</h2>
+        <i
+          className="fa-solid fa-xmark text-gray-500 text-2xl cursor-pointer"
+          //   onClick={() => setAnalysis(null)}
+          onClick={closeDialog}
+        ></i>
       </div>
       <div className="variable-box flex w-full py-4 gap-4">
         <div
