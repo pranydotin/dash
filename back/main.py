@@ -2,6 +2,7 @@ from typing import Union
 
 from fastapi import FastAPI, APIRouter
 import handlefile
+import analysisRequest
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
@@ -27,3 +28,4 @@ def read_root():
 
 
 app.include_router(handlefile.router)
+app.include_router(analysisRequest.router)
