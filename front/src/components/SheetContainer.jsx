@@ -2,6 +2,8 @@ import { ReactGrid } from "@silevis/reactgrid";
 import { useState, useEffect, useRef } from "react";
 import { AnalyisRequestBox } from "./AnalysisRequestBox";
 import { getCSV } from "../utils/getCSV";
+import { getAnalysis } from "../utils/analysisRequest";
+import { Results } from "./Results";
 import "@silevis/reactgrid/styles.css";
 
 export const SheetContainer = ({
@@ -14,6 +16,7 @@ export const SheetContainer = ({
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
   const [headers, setHeaders] = useState([]);
+  const [results, setResults] = useState([]);
 
   useEffect(() => {
     setColumns(gridData.columns);
@@ -22,11 +25,15 @@ export const SheetContainer = ({
   }, [gridData]);
 
   useEffect(() => {
-    console.log(activeAnalysis);
     if (rows.length > 0) {
-      const csv = getCSV(rows);
+      const [header, csv] = getCSV(rows);
+      getAnalysis(csv, "Descriptives");
     }
   }, [activeAnalysis]);
+
+  //   useEffect(() => {
+  //     console.log(results);
+  //   }, [results]);
 
   const handleColumnResize = (ci, width) => {
     setColumns((prevColumns) => {
@@ -88,14 +95,22 @@ export const SheetContainer = ({
         <i className="fa-solid fa-ellipsis-vertical text-gray-400"></i>
       </div>
       {activeAnalysis && (
-        <AnalyisRequestBox
-          headers={headers}
-          setAnalysis={setActiveAnalysis}
-          title={activeAnalysis}
-          setcontainerWidth={setcontainerWidth}
-        />
+        <>
+          <AnalyisRequestBox
+            headers={headers}
+            setAnalysis={setActiveAnalysis}
+            title={activeAnalysis}
+            setcontainerWidth={setcontainerWidth}
+            rows={rows}
+            results={results}
+            setResults={setResults}
+          />
+          <div className="drag bg-gray-100 w-[10px] cursor-w-resize flex justify-center items-center">
+            {/* <i className="fa-solid fa-ellipsis-vertical text-gray-400"></i> */}
+          </div>
+        </>
       )}
-      <div className="flex-1"></div>
+      <Results results={results} setResults={setResults} />
     </div>
   );
 };

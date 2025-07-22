@@ -1,10 +1,15 @@
 import { useState, useRef, useEffect } from "react";
+import { getCSV } from "../utils/getCSV";
+import { getAnalysis } from "../utils/analysisRequest";
 
 export const AnalyisRequestBox = ({
   headers = [],
   setAnalysis,
   title,
   setcontainerWidth,
+  rows,
+  results,
+  setResults,
 }) => {
   const header = headers.length > 0 ? headers : ["A", "B", "C"];
   const [variable_selected, setVariableSelected] = useState([]);
@@ -13,6 +18,8 @@ export const AnalyisRequestBox = ({
   const [activeVariable, setActiveVariable] = useState([]);
   const [variableMove, setVariableMove] = useState("right");
   const [groupbyMove, setgroupbyMove] = useState("right");
+  const [variableMoveActive, setVariableMoveActive] = useState(true);
+  const [groupbyMoveActive, setgroupbyMoveActive] = useState(true);
   const variableArrow = useRef(null);
   const groupByArrow = useRef(null);
 
@@ -30,48 +37,23 @@ export const AnalyisRequestBox = ({
         setActiveVariable([target.innerText.trim()]);
         variableArrow.current.dataset.move = "right";
         setVariableMove("right");
+        setgroupbyMove("right");
+        setVariableMoveActive(true);
+        setgroupbyMoveActive(true);
         break;
 
       case "variable":
         variableArrow.current.dataset.move = "left";
         setVariableMove("left");
         setActiveVariable([target.innerText.trim()]);
+        setgroupbyMoveActive(false);
         break;
 
-      //   case "move":
-      //     const type = target.dataset.for;
-      //     switch (type) {
-      //       case "variable":
-      //         if (target.dataset.move == "right") {
-      //           // variable_selected.push(activeVariable);
-      //           const updated = [...activeHeader];
-      //           const indexToRemove = updated.indexOf(activeVariable[0]);
-      //           if (indexToRemove !== -1) updated.splice(indexToRemove, 1);
-      //           setActiveHeader(updated);
-      //           if (
-      //             activeVariable.length > 0 &&
-      //             !variable_selected.includes(activeVariable[0])
-      //           )
-      //             setVariableSelected((prev) => [...prev, activeVariable[0]]);
-      //           setActiveVariable([]);
-      //         } else {
-      //           const updated = [...variable_selected];
-      //           const indexToRemove = updated.indexOf(activeVariable[0]);
-      //           if (indexToRemove !== -1) updated.splice(indexToRemove, 1);
-      //           setVariableSelected(updated);
-      //           if (
-      //             activeVariable.length > 0 &&
-      //             !activeHeader.includes(activeVariable[0])
-      //           )
-      //             setActiveHeader((prev) => [...prev, activeVariable[0]]);
-      //         }
-      //         setActiveVariable([]);
-      //         break;
-      //       case "groupby":
-      //         console.log("ba");
-      //         break;
-      //     }
-      //     break;
+      case "groupby":
+        groupByArrow.current.dataset.move = "left";
+        setgroupbyMove("left");
+        setActiveVariable([target.innerText.trim()]);
+        setVariableMoveActive(false);
 
       case "move": {
         const type = target.dataset.for;
@@ -83,27 +65,50 @@ export const AnalyisRequestBox = ({
         if (type === "variable") {
           const isRight = direction === "right";
 
-          if (isRight) {
-            setActiveHeader((prev) => prev.filter((item) => item !== value[0]));
+          if (variableMoveActive) {
+            if (isRight) {
+              setActiveHeader((prev) =>
+                prev.filter((item) => item !== value[0])
+              );
 
-            setVariableSelected((prev) =>
-              prev.includes(value) ? prev : [...prev, value[0]]
-            );
-          } else {
-            setVariableSelected((prev) =>
-              prev.filter((item) => item !== value[0])
-            );
+              setVariableSelected((prev) =>
+                prev.includes(value) ? prev : [...prev, value[0]]
+              );
+            } else {
+              setVariableSelected((prev) =>
+                prev.filter((item) => item !== value[0])
+              );
 
-            setActiveHeader((prev) =>
-              prev.includes(value) ? prev : [...prev, value[0]]
-            );
+              setActiveHeader((prev) =>
+                prev.includes(value) ? prev : [...prev, value[0]]
+              );
+            }
           }
 
           setActiveVariable([]);
         }
 
         if (type === "groupby") {
-          console.log("groupby logic here");
+          const isRight = direction === "right";
+          if (groupbyMoveActive) {
+            if (isRight) {
+              setActiveHeader((prev) =>
+                prev.filter((item) => item !== value[0])
+              );
+
+              setGroup_by((prev) =>
+                prev.includes(value) ? prev : [...prev, value[0]]
+              );
+            } else {
+              setGroup_by((prev) => prev.filter((item) => item !== value[0]));
+
+              setActiveHeader((prev) =>
+                prev.includes(value) ? prev : [...prev, value[0]]
+              );
+            }
+          }
+
+          setActiveVariable([]);
         }
 
         break;
@@ -111,14 +116,20 @@ export const AnalyisRequestBox = ({
     }
   };
   useEffect(() => {
-    console.log("Updated variable selected:", variable_selected);
-  }, [variable_selected]);
-
-  //   useEffect(() => {
-  //     console.log(activeVariable);
-  //     console.log(variable_selected);
-  //     console.log(activeHeader);
-  //   }, [activeVariable]);
+    const fetchAnalysis = async () => {
+      const csv = getCSV(rows);
+      const data = await getAnalysis(
+        csv,
+        "Descriptives",
+        variable_selected,
+        group_by
+      );
+      if (data.status == "success") {
+        setResults(JSON.parse(data.json_data));
+      }
+    };
+    fetchAnalysis();
+  }, [variable_selected, group_by]);
 
   return (
     <div className="w-[620px] border-1 border-gray-400 p-4">
@@ -162,8 +173,8 @@ export const AnalyisRequestBox = ({
         <div className="flex1 flex flex-col items-center justify-around gap-7">
           <i
             className={`fa-solid fa-arrow-${
-              variableMove == "right" ? "right" : "left"
-            }`}
+              variableMove === "right" ? "right" : "left"
+            } ${variableMoveActive ? "" : "text-gray-300"}`}
             ref={variableArrow}
             data-for="variable"
             data-move={variableMove}
@@ -171,7 +182,9 @@ export const AnalyisRequestBox = ({
             onClick={handlevariables}
           ></i>
           <i
-            className="fa-solid fa-arrow-right"
+            className={`fa-solid fa-arrow-${
+              groupbyMove === "right" ? "right" : "left"
+            } ${groupbyMoveActive ? "" : "text-gray-300 cursor-not-allowed"}`}
             ref={groupByArrow}
             data-for="groupby"
             data-move={groupbyMove}
@@ -185,7 +198,7 @@ export const AnalyisRequestBox = ({
         <div className="flex-1 flex flex-col">
           <h4 className="text-[13px]">Variable</h4>
           <div
-            className=" bg-white border-1 border-gray-300 h-30"
+            className=" bg-white border-1 border-gray-300 h-30 overflow-y-auto"
             id="selected-variables"
           >
             <ul>
@@ -205,9 +218,24 @@ export const AnalyisRequestBox = ({
           </div>
           <h4 className="text-[13px]">Group by</h4>
           <div
-            className=" bg-white border-1 border-gray-300 flex-1"
+            className=" bg-white border-1 border-gray-300 h-15 overflow-y-auto"
             id="groupby-variables"
-          ></div>
+          >
+            <ul>
+              {group_by.map((item, index) => (
+                <li
+                  key={index}
+                  className={`text-[12px] p-1 ${
+                    activeVariable.includes(item) ? "bg-amber-100" : ""
+                  } cursor-default`}
+                  data-variable_type="groupby"
+                  onClick={handlevariables}
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
       {/*  */}
